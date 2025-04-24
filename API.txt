@@ -1,0 +1,41 @@
+Content-Type: application/json
+
+Register:POST
+http://localhost:5000/api/auth/register
+
+{
+  "username": "Admin User",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "admin"
+}
+
+Login:POST
+http://localhost:5000/api/auth/login
+
+{
+  "username": "Admin User",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "admin"
+}
+
+Create Language:POST
+
+http://localhost:5000/api/languages
+
+Authorization Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDllMDIyYzFiNjQxOTA2Yzk4NDk0YSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NTQ3ODExNywiZXhwIjoxNzQ2MDgyOTE3fQ.xNqVFRj7Hm6CQPdXAf1LhIRSwoy2dw0G7nbB2WCElxU
+
+{
+  "name": "English",
+  "code": "en",
+}
+
+Get All Languages:GET
+
+http://localhost:5000/api/languages
+
+
+Get All lesions under the specific language:GET
+
+http://localhost:5000/api/languages/6809e51159c06822fa4b43b8/lessons

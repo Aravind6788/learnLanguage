@@ -1,0 +1,37 @@
+const express = require('express');
+const router = express.Router();
+const Lesson = require('../models/Lesson');
+const Language = require('../models/Language');
+const { protect, isAdmin } = require('../middlewares/authMiddleware');
+
+// Create a new language
+router.post('/', protect, isAdmin, async (req, res) => {
+  try {
+    const language = await Language.create(req.body);
+    res.status(201).json(language);
+  } catch (err) {
+    res.status(500).json({ msg: 'Language creation failed', error: err.message });
+  }
+});
+
+// Get all languages
+router.get('/', async (req, res) => {
+  try {
+    const languages = await Language.find();
+    res.json(languages);
+  } catch (err) {
+    res.status(500).json({ msg: 'Fetch failed', error: err.message });
+  }
+});
+
+// Get all lessons for a language
+router.get('/:languageId/lessons', async (req, res) => {
+  try {
+    const lessons = await Lesson.find({ languageId: req.params.languageId });
+    res.json(lessons);
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to fetch lessons for this language', error: err.message });
+  }
+});
+
+module.exports = router;
