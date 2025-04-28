@@ -5,6 +5,22 @@ const Language = require('../models/Language');
 const { protect, isAdmin } = require('../middlewares/authMiddleware');
 
 // Create a new language
+// Get a language by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const language = await Language.findById(req.params.id);
+    
+    if (!language) {
+      return res.status(404).json({ msg: 'Language not found' });
+    }
+
+    res.json(language);
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to fetch language', error: err.message });
+  }
+});
+
+
 router.post('/', protect, isAdmin, async (req, res) => {
   try {
     const language = await Language.create(req.body);

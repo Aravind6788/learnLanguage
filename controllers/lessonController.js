@@ -1,14 +1,40 @@
 const Lesson = require('../models/Lesson');
 
 // Create a lesson (Admin only)
+// controllers/lessonController.js
 exports.createLesson = async (req, res) => {
   try {
-    const lesson = await Lesson.create(req.body);
-    res.status(201).json(lesson);
-  } catch (err) {
-    res.status(500).json({ msg: 'Lesson creation failed', error: err.message });
+    const { languageId, category, type, title, contents } = req.body;
+
+    if (!Array.isArray(contents) || contents.length === 0) {
+      return res.status(400).json({ msg: "Lesson must include at least one content item." });
+    }
+
+    // Calculate total marks
+    const totalMarks = contents.reduce((sum, item) => sum + (item.marks || 0), 0);
+
+    const newLesson = new Lesson({
+      languageId,
+      category,
+      type,
+      title,
+      contents,
+      totalMarks
+    });
+
+    const savedLesson = await newLesson.save();
+
+    res.status(201).json({
+      msg: 'Lesson created successfully',
+      lesson: savedLesson
+    });
+
+  } catch (error) {
+    console.error('Error creating lesson:', error);
+    res.status(500).json({ msg: 'Server error', error: error.message });
   }
 };
+
 
 // Get all lessons
 exports.getLessons = async (req, res) => {

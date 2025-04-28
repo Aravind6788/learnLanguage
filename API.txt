@@ -39,3 +39,65 @@ http://localhost:5000/api/languages
 Get All lesions under the specific language:GET
 
 http://localhost:5000/api/languages/6809e51159c06822fa4b43b8/lessons
+
+
+create Lessons: POST
+http://localhost:5000/api/lessons
+{
+  "languageId": "6809e51159c06822fa4b43b8",
+  "category": "essentials",
+  "type": "word",
+  "title": "Greetings - Basics",
+  "contents": [
+    {
+      "text": "Hello",
+      "meaning": "A greeting",
+      "example": "Hello, how are you?",
+      "audio": "/audio/hello.mp3",
+      "difficulty": "easy",
+      "marks": 0
+    },
+    {
+      "text": "Good morning",
+      "meaning": "Morning greeting",
+      "example": "Good morning, teacher!",
+      "audio": "/audio/goodmorning.mp3",
+      "difficulty": "easy",
+      "marks": 0
+    }
+  ],
+  "totalMarks": 0
+}
+
+
+update lesson details:PUT
+http://localhost:5000/api/lessons/680c75aee768949e338e8664
+
+{
+  "title": "Greetings - Beginner",
+  "type": "sentence"
+}
+
+
+update A specific content:PUT
+http://localhost:5000/api/lessons/680c75aee768949e338e8664/content/0
+
+{
+  "example": "Hello, my name is Ara.",
+  "audio": "/audio/hello_v2.mp3"
+}
+
+update user marks for each lessons:PUT
+http://localhost:5000/api/lessons/680c75aee768949e338e8664/user-mark
+
+{
+  "userId": "6809bc070f30da498b83e812",
+  "obtainedMarks": 2
+}
+
+
+Add language to the progress:POST
+http://localhost:5000/api/updates/680d5a09e17d8c6dd9f5a032/add-language
+{
+  "languageId": "6809e51159c06822fa4b43b8"
+}

@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 
+const userRoutes = require('./routes/userRoutes');
+
+
 dotenv.config();
 const app = express();
 
@@ -15,6 +18,8 @@ app.use('/api/auth', require('./routes/authRoutes'));
 // app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/lessons', require('./routes/lessonRoutes.js'));
 app.use('/api/languages', require('./routes/languageRoutes.js'));
+app.use('/api/users',require('./routes/userDashboardRoutes.js'));
+app.use('/api/updates', userRoutes);
 
 // Connect DB & Start Server
 mongoose.connect(process.env.MONGO_URI)
