@@ -124,7 +124,72 @@ exports.getLanguageProgress = async (req, res) => {
     return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
-
+exports.getLanguageProgress = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { languageId } = req.params;
+    
+    // Validate languageId
+    if (!mongoose.Types.ObjectId.isValid(languageId)) {
+      return res.status(400).json({ message: 'Invalid language ID' });
+    }
+    
+    // Get user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Make sure user.progress exists
+    if (!user.progress) {
+      user.progress = [];
+    }
+    
+    // Get all lessons for this language
+    const lessons = await Lesson.find({ languageId });
+    
+    // Group lessons by category
+    const categoriesMap = {};
+    
+    lessons.forEach(lesson => {
+      if (!categoriesMap[lesson.category]) {
+        categoriesMap[lesson.category] = {
+          category: lesson.category,
+          total: 0,
+          completed: 0,
+          totalMarks: 0,
+          obtainedMarks: 0
+        };
+      }
+      
+      categoriesMap[lesson.category].total += 1;
+      categoriesMap[lesson.category].totalMarks += lesson.totalMarks || 0;
+      
+      // Find user progress for this lesson - with safe checks
+      if (lesson._id && user.progress && user.progress.length > 0) {
+        const userProgress = user.progress.find(
+          p => p && p.lessonId && p.lessonId.toString() === lesson._id.toString()
+        );
+        
+        if (userProgress && userProgress.completed) {
+          categoriesMap[lesson.category].completed += 1;
+          categoriesMap[lesson.category].obtainedMarks += userProgress.score || 0;
+        }
+      }
+    });
+    
+    const progressByCategory = Object.values(categoriesMap);
+    
+    return res.json({
+      languageId,
+      progressByCategory
+    });
+    
+  } catch (error) {
+    console.error('Error getting language progress:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 // Get user recent activity
 exports.getRecentActivity = async (req, res) => {
   try {
